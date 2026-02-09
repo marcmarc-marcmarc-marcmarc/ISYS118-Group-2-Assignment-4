@@ -1,8 +1,10 @@
 package Database;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import DigitalID.Person;
 
@@ -16,10 +18,19 @@ public class Database {
         ensureDatabaseExists(); // Create DB if necessary
 
         // Ensure personID doesn't already exist
-
+        if (findPerson(person.getPersonID()) != null) {
+            throw new IllegalArgumentException("Person with ID " + person.getPersonID() + " already exists!!!");
+        }
+        
         // Write person to new line
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DB_FILE, true))) {
+            writer.write(person.toFileLine(DELIMITER));
+            writer.newLine();
+        }
+
     }
     
+    // Seearch for person within DB by _personID
     public static Person findPerson(String personID) throws IOException {
         File file = new File(DB_FILE);
         if (!file.exists()) {
@@ -38,6 +49,7 @@ public class Database {
         return null;
     }
 
+    
     // Helper function to check if DB exists
     private static void ensureDatabaseExists() throws IOException {
         File file = new File(DB_FILE);

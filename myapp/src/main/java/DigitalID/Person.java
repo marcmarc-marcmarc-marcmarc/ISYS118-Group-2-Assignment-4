@@ -17,12 +17,15 @@ public class Person {
     // Constructors
     public Person() {}
 
-    public Person(String personID, String firstName, String lastName, String address, String birthdate) {
+    public Person(String personID, String firstName, String lastName, 
+                    String address, String birthdate) {
         this._personID = personID;
         this._firstName = firstName;
         this._lastName = lastName;
         this._address = address;
         this._birthdate = birthdate;
+        this._demeritPoints = new HashMap<>();
+        this._isSuspended = false;
     }
     
     // Getters and Setters

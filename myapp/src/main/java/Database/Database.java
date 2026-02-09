@@ -17,8 +17,7 @@ public class Database {
 
         // Write person to new line
     }
-
-
+ 
     // Helper function to check if DB exists
     private static void ensureDatabaseExists() throws IOException {
         File file = new File(DB_FILE);

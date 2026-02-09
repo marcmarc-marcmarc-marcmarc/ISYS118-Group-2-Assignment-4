@@ -1,6 +1,7 @@
 package DigitalID;
 import java.util.HashMap;
 import java.util.Date;
+import Database.Database;
 
 
 public class Person {
@@ -31,6 +32,21 @@ public class Person {
     public void setBirthdate(String birthdate) {  this._birthdate = birthdate; }
     public void setIsSuspended(boolean isSuspended) {  this._isSuspended = isSuspended; }
     
+    // Helpers
+
+    // Convert Person data to file line for database entry
+    public String toFileLine(String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(_personID).append(delimiter);
+        sb.append(_firstName).append(delimiter);
+        sb.append(_lastName).append(delimiter);
+        sb.append(_address).append(delimiter);
+        sb.append(_birthdate).append(delimiter);
+        sb.append(_demeritPoints).append(delimiter);
+        sb.append(_isSuspended).append(delimiter);
+        return sb.toString();
+    }
+
     // Methods
     public boolean addPerson(){
 

@@ -16,6 +16,14 @@ public class Person {
 
     // Constructors
     public Person() {}
+
+    public Person(String personID, String firstName, String lastName, String address, String birthdate) {
+        this._personID = personID;
+        this._firstName = firstName;
+        this._lastName = lastName;
+        this._address = address;
+        this._birthdate = birthdate;
+    }
     
     // Getters and Setters
     public String getPersonID(String personID) { return _personID; }
@@ -34,7 +42,7 @@ public class Person {
     
     // Helpers
 
-    // Convert Person data to file line for database entry
+    // Convert Person object to file line for database entry
     public String toFileLine(String delimiter) {
         StringBuilder sb = new StringBuilder();
         sb.append(_personID).append(delimiter);
@@ -47,6 +55,26 @@ public class Person {
         return sb.toString();
     }
 
+    // Convert database entry to Person Object
+    public static Person fromFileLine(String line, String delimiter) {
+        // Must exist
+        if (line == null || line.trim().isEmpty()) {
+            return null;
+        }
+
+        // Must contain all data members
+        String[] parts = line.split("\\" + delimiter);
+        if (parts.length < 7) {
+            return null;
+        }
+
+        // Build Person
+        Person person = new Person(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        // TODO serialise the demerit points mapping here
+        person._isSuspended = Boolean.parseBoolean(parts[6]);
+
+        return person;
+    }
     // Methods
     public boolean addPerson(){
 

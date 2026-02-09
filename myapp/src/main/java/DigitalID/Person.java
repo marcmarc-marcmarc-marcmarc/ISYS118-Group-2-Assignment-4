@@ -1,5 +1,6 @@
 package DigitalID;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Date;
 import Database.Database;
 
@@ -43,7 +44,40 @@ public class Person {
     public void setBirthdate(String birthdate) {  this._birthdate = birthdate; }
     public void setIsSuspended(boolean isSuspended) {  this._isSuspended = isSuspended; }
     
-    // Helpers
+    
+    // Helper functions
+
+    // Convert the _demeritPoints Mapping into a string
+    private String serialiseDemeritPoints() {
+        if (_demeritPoints == null || _demeritPoints.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Date, Integer> entry : _demeritPoints.entrySet()) {
+            sb.append(entry.getKey().getTime()).append(":").append(entry.getValue()).append(",");
+        }
+        return sb.substring(0, sb.length() - 1); // Remove the last comma..
+    }
+
+    // Map the concatenated string of date:int into HashMap<Date, Integer>
+    private static HashMap<Date, Integer> deserialiseDemeritPoints(String data) {
+        HashMap<Date, Integer> map = new HashMap<>();
+        if (data == null || data.trim().isEmpty()) {
+            return map;
+        }
+        
+        String[] entries = data.split(",");
+        for (String entry : entries) {
+            String[] parts = entry.split(":");
+            if (parts.length == 2) {
+                Date date = new Date(Long.parseLong(parts[0]));
+                Integer points = Integer.parseInt(parts[1]);
+                map.put(date, points);
+            }
+        }
+        return map;
+    }
 
     // Convert Person object to file line for database entry
     public String toFileLine(String delimiter) {

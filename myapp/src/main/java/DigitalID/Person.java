@@ -30,12 +30,12 @@ public class Person {
     }
     
     // Getters and Setters
-    public String getPersonID(String personID) { return _personID; }
-    public String getFirstName(String firstName) { return _firstName; }
-    public String getLastName(String lastName) { return _lastName; }
-    public String getAddress(String address) { return _address; }
-    public String getBirthdate(String birthdate) { return _birthdate; }
-    public boolean getIsSuspended(boolean isSuspended) { return _isSuspended; }
+    public String getPersonID() { return _personID; }
+    public String getFirstName() { return _firstName; }
+    public String getLastName() { return _lastName; }
+    public String getAddress() { return _address; }
+    public String getBirthdate() { return _birthdate; }
+    public boolean getIsSuspended() { return _isSuspended; }
 
     public void setPersonID(String personID) {  this._personID = personID; }
     public void setFirstName(String firstName) {  this._firstName = firstName; }
@@ -46,7 +46,7 @@ public class Person {
     
     
     // Helper functions
-
+    
     // Convert the _demeritPoints Mapping into a string
     private String serialiseDemeritPoints() {
         if (_demeritPoints == null || _demeritPoints.isEmpty()) {

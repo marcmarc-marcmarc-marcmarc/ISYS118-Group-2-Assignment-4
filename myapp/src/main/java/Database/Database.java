@@ -1,6 +1,8 @@
 package Database;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import DigitalID.Person;
 
@@ -17,7 +19,25 @@ public class Database {
 
         // Write person to new line
     }
- 
+    
+    public static Person findPerson(String personID) throws IOException {
+        File file = new File(DB_FILE);
+        if (!file.exists()) {
+            return null;
+        }
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Person person = Person.fromFileLine(line, DELIMITER);
+                if (person != null && person.getPersonID().equals(personID)) {
+                    return person;
+                }
+            }
+        }
+        return null;
+    }
+
     // Helper function to check if DB exists
     private static void ensureDatabaseExists() throws IOException {
         File file = new File(DB_FILE);

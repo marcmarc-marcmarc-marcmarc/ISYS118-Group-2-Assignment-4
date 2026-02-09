@@ -87,7 +87,7 @@ public class Person {
         sb.append(_lastName).append(delimiter);
         sb.append(_address).append(delimiter);
         sb.append(_birthdate).append(delimiter);
-        sb.append(_demeritPoints).append(delimiter);
+        sb.append(serialiseDemeritPoints()).append(delimiter);
         sb.append(_isSuspended).append(delimiter);
         return sb.toString();
     }
@@ -107,7 +107,7 @@ public class Person {
 
         // Build Person
         Person person = new Person(parts[0], parts[1], parts[2], parts[3], parts[4]);
-        // TODO serialise the demerit points mapping here
+        person._demeritPoints = deserialiseDemeritPoints(parts[5]);
         person._isSuspended = Boolean.parseBoolean(parts[6]);
 
         return person;

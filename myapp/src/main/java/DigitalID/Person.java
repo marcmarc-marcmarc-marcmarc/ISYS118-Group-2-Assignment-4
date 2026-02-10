@@ -1,7 +1,10 @@
 package DigitalID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
+
 import Database.Database;
 
 
@@ -114,23 +117,6 @@ public class Person {
     }
     // Methods
     public boolean addPerson(){
-
-        // TODO: This method adds information about a person to a TXT file.
-
-        // Condition 1: PersonID should be exactly 10 characters long;
-        // the first two characters should be numbers between 2 and 9,
-        // there should be at least two special characters between characters 3 and 8,
-        // and the last two characters should be upper case letters (A - Z).
-        // Example: "56s_d%&fAB"
-
-        // Condition 2: The address of the Person should follow the format:
-        // StreetNumber|Street|City|State|Country
-        // The State should be only Victoria.
-        // Example: 32|Highland Street|Melbourne|Victoria|Australia
-
-        // Condition 3: The birth date format should be: DD-MM-YYYY.
-        // Example: 15-11-1990
-
         // Instruction: If the Person's information meets the above conditions
         // (and any other conditions you want to consider),
         // the information should be inserted into a TXT file,
@@ -138,8 +124,20 @@ public class Person {
 
         // Otherwise, do not insert into the TXT file and return false.
 
-
-        return true;
+        if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
+            // update text file.
+            try {
+                if (Database.findPerson(this._personID) == null){
+                    Database.createPerson(this);
+                    
+                }
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+        else { return false;}
+        
     }
 
     public boolean updatePersonalDetails(){
@@ -188,4 +186,87 @@ public class Person {
         return "Success";
     }
 
+    private boolean checkNameFormat(){
+        Boolean correctFormat = true;
+        int specialCounter = 0;
+    
+        // Condition 1: PersonID should be exactly 10 characters long;
+        if (this._personID.length() != 10) { return false; }
+
+        // the first two characters should be numbers between 2 and 9,
+        if (!Character.isDigit(this._personID.charAt(0)) || this._personID.charAt(0) == 0 || this._personID.charAt(0) == 1){
+            correctFormat = false;
+        }
+        if (!Character.isDigit(this._personID.charAt(1)) || this._personID.charAt(1) == 0 || this._personID.charAt(1) == 1){
+            correctFormat = false;
+        }
+        // there should be at least two special characters between characters 3 and 8,
+        for (int i = 2; i < this._personID.length(); i++){
+            if (!Character.isLetterOrDigit(this._personID.charAt(i))){
+                specialCounter += 1;
+            }
+        }
+        if (specialCounter < 2){
+            correctFormat = false;
+        }
+        // and the last two characters should be upper case letters (A - Z).
+        if (!Character.isUpperCase(this._personID.charAt(8)) || !Character.isUpperCase(this._personID.charAt(9))){
+            correctFormat = false;
+        }
+
+        return correctFormat;
+    }
+
+    private boolean checkAddressFormat(){
+        // Condition 2: The address of the Person should follow the format:
+        // StreetNumber|Street|City|State|Country
+
+        // The State should be only Victoria.
+        // Example: 32|Highland Street|Melbourne|Victoria|Australia
+        Boolean correctFormat = true;
+        int pipeCounter = 0;
+        String address = this._address;
+        
+        for (int i = 0; i < address.length(); i++){
+            if (address.charAt(i) == '|'){
+                pipeCounter += 1;
+            }
+        }
+        if (pipeCounter != 4) { return false; }
+
+        String details [] = address.split("|");
+        
+        if (details.length != 5){
+            correctFormat = false;
+        }
+        if (!details[3].equalsIgnoreCase("Victoria")){
+            correctFormat = false;
+        }
+        try {
+            Integer.parseInt(details[0]);
+        } catch (Exception e){
+            correctFormat = false;
+        }
+
+        return correctFormat;
+
+    }
+
+    private boolean checkBirthdayFormat(){
+        Boolean correctFormat = true;
+        // Condition 3: The birth date format should be: DD-MM-YYYY.
+        // Example: 15-11-1990
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); 
+        try {
+            LocalDate.parse(getBirthdate(), formatter);
+        }
+        catch (Exception e){
+            correctFormat = false;
+        }
+        return correctFormat;
+        
+    }
+
 }
+
+

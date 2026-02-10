@@ -17,7 +17,7 @@ public class Database {
     public static final String DELIMITER = "|";
     
     // Add Person Object to the Database
-    private static void createPerson(Person person) throws IOException {
+    public static void createPerson(Person person) throws IOException {
         ensureDatabaseExists(); // Create DB if necessary
 
         // Ensure personID doesn't already exist

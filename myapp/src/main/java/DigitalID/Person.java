@@ -115,29 +115,28 @@ public class Person {
 
         return person;
     }
+    
     // Methods
     public boolean addPerson(){
         // Instruction: If the Person's information meets the above conditions
-        // (and any other conditions you want to consider),
-        // the information should be inserted into a TXT file,
-        // and the addPerson function should return true.
-
-        // Otherwise, do not insert into the TXT file and return false.
+            // (and any other conditions you want to consider) 
 
         if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
             // update text file.
             try {
                 if (Database.findPerson(this._personID) == null){
+                     // the information should be inserted into a TXT file,
                     Database.createPerson(this);
                     
                 }
             } catch (Exception e) {
                 return false;
             }
+            // and the addPerson function should return true.
             return true;
         }
+        // Otherwise, do not insert into the TXT file and return false.
         else { return false;}
-        
     }
 
     public boolean updatePersonalDetails(){
@@ -194,13 +193,16 @@ public class Person {
         if (this._personID.length() != 10) { return false; }
 
         // the first two characters should be numbers between 2 and 9,
-        if (!Character.isDigit(this._personID.charAt(0)) || this._personID.charAt(0) == 0 || this._personID.charAt(0) == 1){
+        if (!Character.isDigit(this._personID.charAt(0)) ||
+            this._personID.charAt(0) == 0 || this._personID.charAt(0) == 1){
             correctFormat = false;
         }
-        if (!Character.isDigit(this._personID.charAt(1)) || this._personID.charAt(1) == 0 || this._personID.charAt(1) == 1){
+        if (!Character.isDigit(this._personID.charAt(1)) ||
+            this._personID.charAt(1) == 0 || this._personID.charAt(1) == 1){
             correctFormat = false;
         }
         // there should be at least two special characters between characters 3 and 8,
+            // inclusive of 3 and 8?
         for (int i = 2; i < this._personID.length(); i++){
             if (!Character.isLetterOrDigit(this._personID.charAt(i))){
                 specialCounter += 1;
@@ -210,7 +212,8 @@ public class Person {
             correctFormat = false;
         }
         // and the last two characters should be upper case letters (A - Z).
-        if (!Character.isUpperCase(this._personID.charAt(8)) || !Character.isUpperCase(this._personID.charAt(9))){
+        if (!Character.isUpperCase(this._personID.charAt(8)) ||
+            !Character.isUpperCase(this._personID.charAt(9))){
             correctFormat = false;
         }
 
@@ -253,9 +256,9 @@ public class Person {
     }
 
     private boolean checkBirthdayFormat(){
-        Boolean correctFormat = true;
         // Condition 3: The birth date format should be: DD-MM-YYYY.
-        // Example: 15-11-1990
+
+        Boolean correctFormat = true;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); 
         try {
             LocalDate.parse(getBirthdate(), formatter);
@@ -264,7 +267,6 @@ public class Person {
             correctFormat = false;
         }
         return correctFormat;
-        
     }
 
 }

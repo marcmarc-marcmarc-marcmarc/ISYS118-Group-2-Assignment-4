@@ -117,6 +117,13 @@ public class Person {
     }
     
     // Methods
+    public boolean meetsAddPersonRequirements(){
+        if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
+            return true;
+        }
+        return false;
+    }
+
     public boolean addPerson(){
         // Instruction: If the Person's information meets the above conditions
             // (and any other conditions you want to consider) 

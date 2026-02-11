@@ -279,7 +279,7 @@ public class Person {
     }
 
     // Private Methods - 2. updatePersonalDetails function
-    // Calculate age from birthdate
+    // Calculate age from Person's birthdate
     private int getAge() {
         if (_birthdate == null || _birthdate.isEmpty()) {
             return 0;
@@ -301,5 +301,16 @@ public class Person {
     // Condition 1: If a person is under 18, their address cannot be changed.
     public boolean canChangeAddress() {
         return getAge() >= 18;
+    }
+
+    // Condition 3: If the first character/digit of a person's ID is an even number, then their ID cannot be changed.
+    public boolean canChangeID() {
+        if (_personID == null || _personID.isEmpty()){
+            return true; // No ID seems fine
+        }
+        if (Character.isDigit(_personID.charAt(0)) && Character.getNumericValue(_personID.charAt(0)) % 2 != 0) {
+            return true; // If it is a digit, check if its odd
+        }
+        return false;
     }
 }

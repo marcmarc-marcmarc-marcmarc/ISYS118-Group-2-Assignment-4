@@ -1,5 +1,6 @@
 package DigitalID;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,7 @@ import Database.Database;
 
 
 public class Person {
-    // Data Members
+    // Instance Variables
     private String _personID;
     private String _firstName;
     private String _lastName;
@@ -20,7 +21,6 @@ public class Person {
 
     // Constructors
     public Person() {}
-
     public Person(String personID, String firstName, String lastName, 
                     String address, String birthdate) {
         this._personID = personID;
@@ -32,14 +32,13 @@ public class Person {
         this._isSuspended = false;
     }
     
-    // Getters and Setters
+    // Public Methods
     public String getPersonID() { return _personID; }
     public String getFirstName() { return _firstName; }
     public String getLastName() { return _lastName; }
     public String getAddress() { return _address; }
     public String getBirthdate() { return _birthdate; }
     public boolean getIsSuspended() { return _isSuspended; }
-
     public void setPersonID(String personID) {  this._personID = personID; }
     public void setFirstName(String firstName) {  this._firstName = firstName; }
     public void setLastName(String lastName) {  this._lastName = lastName; }
@@ -47,8 +46,7 @@ public class Person {
     public void setBirthdate(String birthdate) {  this._birthdate = birthdate; }
     public void setIsSuspended(boolean isSuspended) {  this._isSuspended = isSuspended; }
     
-    
-    // Helper functions
+    // Private Methods
     
     // Convert the _demeritPoints Mapping into a string
     private String serialiseDemeritPoints() {
@@ -154,8 +152,10 @@ public class Person {
         // Changing personal details will not affect demerit points or suspension status.
 
         // All relevant conditions from addPerson must also be checked here.
-
-        // Condition 1: If a person is under 18, their address cannot be changed.
+        if (meetsAddPersonRequirements()){
+            // Condition 1: If a person is under 18, their address cannot be changed.
+            return true;
+        }
 
         // Condition 2: If a person's birthday is changed, then no other personal
         // detail (ID, firstName, lastName, address) can be changed.
@@ -167,7 +167,7 @@ public class Person {
         // update the TXT file and return true.
         // Otherwise, do not update and return false.
 
-        return true;
+        return false;
     }
 
     public String addDemeritPoints(){
@@ -191,6 +191,8 @@ public class Person {
 
         return "Success";
     }
+
+
 
     private boolean checkNameFormat(){
         Boolean correctFormat = true;
@@ -276,6 +278,28 @@ public class Person {
         return correctFormat;
     }
 
+    // Private Methods - 2. updatePersonalDetails function
+    // Calculate age from birthdate
+    private int getAge() {
+        if (_birthdate == null || _birthdate.isEmpty()) {
+            return 0;
+        }
+
+        if (checkBirthdayFormat()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            try {
+                LocalDate birthDate = LocalDate.parse(_birthdate, formatter);
+                LocalDate currentDate = LocalDate.now();
+                return Period.between(birthDate, currentDate).getYears();
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+        return 0;
+    }   
+
+    // Condition 1: If a person is under 18, their address cannot be changed.
+    public boolean canChangeAddress() {
+        return getAge() >= 18;
+    }
 }
-
-

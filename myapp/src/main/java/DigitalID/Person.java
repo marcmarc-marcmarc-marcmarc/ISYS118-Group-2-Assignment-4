@@ -281,25 +281,31 @@ public class Person {
     // Private Methods - 2. updatePersonalDetails function
     // Calculate age from Person's birthdate
     private int getAge() {
+        // If the person does not have a birthday return 0
         if (_birthdate == null || _birthdate.isEmpty()) {
             return 0;
         }
 
         if (checkBirthdayFormat()) {
+            // Match this pattern
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             try {
                 LocalDate birthDate = LocalDate.parse(_birthdate, formatter);
                 LocalDate currentDate = LocalDate.now();
+                // Return birthday - current date
                 return Period.between(birthDate, currentDate).getYears();
             } catch (Exception e) {
+                // If error occurs return 0
                 return 0;
             }
         }
+        // If we hit this block return 0
         return 0;
     }   
 
     // Condition 1: If a person is under 18, their address cannot be changed.
     public boolean canChangeAddress() {
+        // If person is 18 or older return true
         return getAge() >= 18;
     }
 
@@ -313,4 +319,30 @@ public class Person {
         }
         return false;
     }
+
+    // Helper method to validate single field update
+    public boolean canUpdatePersonalDetails(String fieldName, boolean isUpdatingBirthday) {
+        switch (fieldName.toLowerCase()) {
+            case "address":
+                return canChangeAddress(); // Condition 1
+
+            case "firstname":
+            case "lastname":
+                if (isUpdatingBirthday) { 
+                    return false; // Condition 2
+                } else return true;
+
+            case "personid":
+            case "id":
+                return canChangeID(); // Condition 3
+
+            case "birthdate":
+                return true; // Can always be changed, just not with other fields
+
+            default:
+                return true;
+        }
+    }
+
+    // Helper method to validate batch updates (multiple fields at once)
 }

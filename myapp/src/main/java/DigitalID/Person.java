@@ -309,7 +309,7 @@ public class Person {
             return true; // No ID seems fine
         }
         if (Character.isDigit(_personID.charAt(0)) && Character.getNumericValue(_personID.charAt(0)) % 2 != 0) {
-            return true; // If it is a digit, check if its odd
+            return true; // If it is a digit, check if its odd -> return true
         }
         return false;
     }

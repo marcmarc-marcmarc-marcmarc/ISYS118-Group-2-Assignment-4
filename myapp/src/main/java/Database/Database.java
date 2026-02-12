@@ -12,7 +12,7 @@ import java.util.List;
 import DigitalID.Person;
 
 public class Database {
-    // Final Vars
+    // Static Variables
     public static final String DB_FILE = "../database.txt";
     public static final String DELIMITER = "|";
     

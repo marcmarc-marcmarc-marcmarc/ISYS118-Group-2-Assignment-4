@@ -146,7 +146,7 @@ public class Person {
         if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
             // update text file.
             try {
-                if (Database.findPerson(this._personID) == null){
+                if (Database.findPersonByInternalID(this._internalID) == null){
                      // the information should be inserted into a TXT file,
                     Database.createPerson(this);
                     
@@ -165,7 +165,7 @@ public class Person {
         if (meetsAddPersonRequirements()) { // All conditions from addPerson are checked here.
             try {
                 // Fetch existing record from the database to compare against
-                Person existing = Database.findPerson(_personID);
+                Person existing = Database.findPersonByInternalID(_internalID);
 
                 // If person doesn't exist -> return false.
                 if (existing == null) {

@@ -21,7 +21,7 @@ public class Database {
         ensureDatabaseExists(); // Create DB if necessary
 
         // Ensure personID doesn't already exist
-        if (findPerson(person.getPersonID()) != null) {
+        if (findPersonByInternalID(person.getInternalID()) != null) {
             throw new IllegalArgumentException("Person with ID " + person.getPersonID() + " already exists!!!");
         }
         
@@ -65,7 +65,7 @@ public class Database {
     }
 
     // Search for person within DB by _personID
-    public static Person findPerson(String personID) throws IOException {
+    public static Person findPersonByInternalID(String internalID) throws IOException {
         File file = new File(DB_FILE);
         if (!file.exists()) {
             return null;
@@ -74,9 +74,9 @@ public class Database {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                Person person = Person.fromFileLine(line, DELIMITER);
-                if (person != null && person.getPersonID().equals(personID)) {
-                    return person;
+                String[] parts = line.split("\\" + DELIMITER);
+                if (parts.length > 0 && parts[0].equals(internalID)) {
+                    return Person.fromFileLine(line, DELIMITER);
                 }
             }
         }

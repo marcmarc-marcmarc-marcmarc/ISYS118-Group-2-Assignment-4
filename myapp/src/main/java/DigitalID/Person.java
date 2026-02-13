@@ -145,28 +145,36 @@ public class Person {
     }
 
     public boolean updatePersonalDetails(){
+        if (meetsAddPersonRequirements()) { // All conditions from addPerson are checked here.
+            try {
+                // Fetch existing record from the database to compare against
+                Person existing = Database.findPerson(_personID);
 
-        // TODO: This method allows updating a person's ID, firstName, lastName,
-        // address and birthday in a TXT file.
+                // If person doesn't exist -> return false.
+                if (existing == null) {
+                    return false;
+                }
+                // Compare fields against current object, flagging field changes
+                boolean isUpdatingPersonID  = !_personID.equals(existing.getPersonID());
+                boolean isUpdatingFirstName = !_firstName.equals(existing.getFirstName());
+                boolean isUpdatingLastName  = !_lastName.equals(existing.getLastName());
+                boolean isUpdatingAddress   = !_address.equals(existing.getAddress());
+                boolean isUpdatingBirthdate = !_birthdate.equals(existing.getBirthdate());
 
-        // Changing personal details will not affect demerit points or suspension status.
-
-        // All relevant conditions from addPerson must also be checked here.
-        if (meetsAddPersonRequirements()){
-            // Condition 1: If a person is under 18, their address cannot be changed.
-            return true;
+                    // Check preconditions via canUpdateFields()
+                    if (!canUpdateFields(isUpdatingBirthdate, isUpdatingPersonID,
+                                        isUpdatingFirstName, isUpdatingLastName, isUpdatingAddress)) {
+                        return false;
+                    }
+        
+                    // updated info meets all conditions -> update the TXT file and return true.
+                    Database.updatePerson(this);
+                    return true;
+                } catch (Exception e) {
+                return false;
+            }
         }
-
-        // Condition 2: If a person's birthday is changed, then no other personal
-        // detail (ID, firstName, lastName, address) can be changed.
-
-        // Condition 3: If the first digit of a person's ID is an even number,
-        // then their ID cannot be changed.
-
-        // Instruction: If updated info meets all conditions,
-        // update the TXT file and return true.
-        // Otherwise, do not update and return false.
-
+        // Otherwise, do not update and return false
         return false;
     }
 
@@ -320,29 +328,28 @@ public class Person {
         return false;
     }
 
-    // Helper method to validate single field update
-    public boolean canUpdatePersonalDetails(String fieldName, boolean isUpdatingBirthday) {
-        switch (fieldName.toLowerCase()) {
-            case "address":
-                return canChangeAddress(); // Condition 1
-
-            case "firstname":
-            case "lastname":
-                if (isUpdatingBirthday) { 
-                    return false; // Condition 2
-                } else return true;
-
-            case "personid":
-            case "id":
-                return canChangeID(); // Condition 3
-
-            case "birthdate":
-                return true; // Can always be changed, just not with other fields
-
-            default:
-                return true;
-        }
-    }
-
     // Helper method to validate batch updates (multiple fields at once)
+    public boolean canUpdateFields(boolean isUpdatingBirthDate, 
+                                    boolean isUpdatingPersonID, 
+                                    boolean isUpdatingFirstName,
+                                    boolean isUpdatingLastName,
+                                    boolean isUpdatingAddress) {
+        // Condition 2: If birthdate is changing no other fields can change
+        if (isUpdatingBirthDate && (isUpdatingPersonID || isUpdatingFirstName || 
+            isUpdatingLastName || isUpdatingAddress)) {
+            return false; 
+        }
+
+        // Condition 1: Check can change address if applicable
+        if (isUpdatingAddress && !canChangeAddress()) {
+            return false;
+        }
+
+        // Condition 3: Check can change ID if applicable
+        if (isUpdatingPersonID && !canChangeID()) {
+            return false;
+        }
+
+        return true;
+    }
 }

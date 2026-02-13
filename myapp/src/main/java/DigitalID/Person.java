@@ -34,6 +34,19 @@ public class Person {
         this._demeritPoints = new HashMap<>();
         this._isSuspended = false;
     }
+
+    private Person(String internalID, String personID, String firstName, String lastName,
+               String address, String birthdate, HashMap<Date, Integer> demeritPoints, boolean isSuspended) {
+        this._internalID    = internalID; // Restored from file — not regenerated
+        this._personID      = personID;
+        this._firstName     = firstName;
+        this._lastName      = lastName;
+        this._address       = address;
+        this._birthdate     = birthdate;
+        this._demeritPoints = demeritPoints;
+        this._isSuspended   = isSuspended;
+    }
+
     
     // Public Methods
     public String getInternalID() { return _internalID; }
@@ -87,6 +100,7 @@ public class Person {
     // Convert Person object to file line for database entry
     public String toFileLine(String delimiter) {
         StringBuilder sb = new StringBuilder();
+        sb.append(_internalID).append(delimiter);
         sb.append(_personID).append(delimiter);
         sb.append(_firstName).append(delimiter);
         sb.append(_lastName).append(delimiter);
@@ -99,23 +113,22 @@ public class Person {
 
     // Convert database entry to Person Object
     public static Person fromFileLine(String line, String delimiter) {
-        // Must exist
-        if (line == null || line.trim().isEmpty()) {
-            return null;
-        }
-
-        // Must contain all data members
+        if (line == null || line.trim().isEmpty()) { return null; }
         String[] parts = line.split("\\" + delimiter);
-        if (parts.length < 7) {
-            return null;
-        }
+        if (parts.length < 8) { return null; } // Must contain all data members
 
-        // Build Person
-        Person person = new Person(parts[0], parts[1], parts[2], parts[3], parts[4]);
-        person._demeritPoints = deserialiseDemeritPoints(parts[5]);
-        person._isSuspended = Boolean.parseBoolean(parts[6]);
+        String _internalID = parts[0];
+        String _personID = parts[1];
+        String _firstName = parts[2];
+        String _lastName = parts[3];
+        String _address = parts[4];
+        String _birthdate = parts[5];
+        HashMap<Date, Integer> _demeritPoints = deserialiseDemeritPoints(parts[6]);
+        boolean _isSuspended = Boolean.parseBoolean(parts[7]);
 
-        return person;
+        // Return Person
+        return new Person(_internalID, _personID, _firstName, _lastName, _address, 
+                    _birthdate, _demeritPoints, _isSuspended);
     }
     
     // Methods

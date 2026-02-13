@@ -14,7 +14,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 -->
 
-<artifactId>numbers</artifactId> <!-- Name of the project -->
+<artifactId>digitalid</artifactId> <!-- Name of the project -->
 
 <version>0.1.0-SNAPSHOT</version> <!-- Version of the project -->
 
@@ -22,7 +22,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 <!-- Java version -->
 
-<maven.compiler.release>21</maven.compiler.release>
+<maven.compiler.release>17</maven.compiler.release>
 
 <junit.version>5.12.2</junit.version>
 

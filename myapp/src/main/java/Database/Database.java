@@ -13,7 +13,7 @@ import DigitalID.Person;
 
 public class Database {
     // Static Variables
-    public static final String DB_FILE = "../database.txt";
+    public static final String DB_FILE = "database.txt";
     public static final String DELIMITER = "|";
     
     // Add Person Object to the Database
@@ -48,7 +48,7 @@ public class Database {
             String line;
             while ((line = reader.readLine()) != null) {
                 Person person = Person.fromFileLine(line, DELIMITER);
-                if (person != null && person.getPersonID().equals(updatedPerson.getPersonID())) {
+                if (person != null && person.getInternalID().equals(updatedPerson.getInternalID())) {
                     allLines.add(updatedPerson.toFileLine(DELIMITER));
                     found = true;
                 } else {
@@ -58,7 +58,7 @@ public class Database {
         }
         
         if (!found) {
-            throw new IllegalArgumentException("Person with ID " + updatedPerson.getPersonID() + " not found");
+            throw new IllegalArgumentException("Person with internal ID " + updatedPerson.getInternalID() + " not found");
         }
         
         writeAllLines(allLines);

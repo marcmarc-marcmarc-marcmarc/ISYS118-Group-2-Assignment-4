@@ -4,6 +4,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Date;
 
 import Database.Database;
@@ -11,6 +12,7 @@ import Database.Database;
 
 public class Person {
     // Instance Variables
+    private String _internalID; // immutable key used for object storage and retrieval
     private String _personID;
     private String _firstName;
     private String _lastName;
@@ -23,6 +25,7 @@ public class Person {
     public Person() {}
     public Person(String personID, String firstName, String lastName, 
                     String address, String birthdate) {
+        this._internalID = UUID.randomUUID().toString();
         this._personID = personID;
         this._firstName = firstName;
         this._lastName = lastName;
@@ -33,6 +36,7 @@ public class Person {
     }
     
     // Public Methods
+    public String getInternalID() { return _internalID; }
     public String getPersonID() { return _personID; }
     public String getFirstName() { return _firstName; }
     public String getLastName() { return _lastName; }

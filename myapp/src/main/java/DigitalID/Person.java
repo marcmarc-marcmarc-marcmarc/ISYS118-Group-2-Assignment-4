@@ -195,26 +195,76 @@ public class Person {
         return false;
     }
 
-    public String addDemeritPoints(){
-
-        // TODO: This method adds demerit points for a person in a TXT file.
-
+    public String addDemeritPoints(String offenseDate, int points){
         // Condition 1: Offense date format must be DD-MM-YYYY.
-        // Example: 15-11-1990
+        if (!checkOffenseDateFormat(offenseDate)) {
+            return "Failed";
+        }
 
         // Condition 2: Demerit points must be a whole number between 1–6.
+        if (points < 1 || points > 6) {
+            return "Failed";
+        }
 
-        // Condition 3:
-        // If person is under 21 → isSuspended = true if total demerit points
-        // within two years exceed 6.
-        // If person is over 21 → isSuspended = true if total demerit points
-        // within two years exceed 12.
+        try {
+            // Parse the offense date
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate offenseLocalDate = LocalDate.parse(offenseDate, formatter);
+            Date offenseDateObj = new Date(offenseLocalDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli());
 
-        // Instruction: If conditions are met, insert into TXT file
-        // and return "Success". Otherwise return "Failed".
+            // Add the demerit points to the HashMap
+            _demeritPoints.put(offenseDateObj, points);
 
+            // Condition 3: Check suspension based on age and total points within 2 years
+            LocalDate currentDate = LocalDate.now();
+            LocalDate twoYearsAgo = currentDate.minusYears(2);
+            
+            int totalPoints = 0;
+            for (Map.Entry<Date, Integer> entry : _demeritPoints.entrySet()) {
+                LocalDate entryDate = entry.getKey().toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate();
+                
+                // Count points within the last 2 years
+                if (!entryDate.isBefore(twoYearsAgo)) {
+                    totalPoints += entry.getValue();
+                }
+            }
 
-        return "Success";
+            // Determine suspension based on age
+            int age = getAge();
+            if (age < 21) {
+                // If person is under 21 → isSuspended = true if total demerit points within two years exceed 6
+                _isSuspended = (totalPoints > 6);
+            } else {
+                // If person is over 21 → isSuspended = true if total demerit points within two years exceed 12
+                _isSuspended = (totalPoints > 12);
+            }
+
+            // Update the person record in the database
+            Database.updatePerson(this);
+            
+            return "Success";
+        } catch (Exception e) {
+            return "Failed";
+        }
+    }
+
+    /**
+     * Helper method to validate offense date format (DD-MM-YYYY)
+     */
+    private boolean checkOffenseDateFormat(String offenseDate) {
+        if (offenseDate == null || offenseDate.isEmpty()) {
+            return false;
+        }
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        try {
+            LocalDate.parse(offenseDate, formatter);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
@@ -228,11 +278,11 @@ public class Person {
 
         // the first two characters should be numbers between 2 and 9,
         if (!Character.isDigit(this._personID.charAt(0)) ||
-            this._personID.charAt(0) == 0 || this._personID.charAt(0) == 1){
+            this._personID.charAt(0) == '0' || this._personID.charAt(0) == '1'){
             correctFormat = false;
         }
         if (!Character.isDigit(this._personID.charAt(1)) ||
-            this._personID.charAt(1) == 0 || this._personID.charAt(1) == 1){
+            this._personID.charAt(1) == '0' || this._personID.charAt(1) == '1'){
             correctFormat = false;
         }
         // there should be at least two special characters between characters 3 and 8,
@@ -271,7 +321,7 @@ public class Person {
         }
         if (pipeCounter != 4) { return false; }
 
-        String details [] = address.split("|");
+        String details [] = address.split("\\|");
         
         if (details.length != 5){
             correctFormat = false;

@@ -17,3 +17,15 @@ buildNumber.properties
 .classpath
 
 *.ini
+
+# Database files (auto-generated at runtime)
+database.txt
+myapp/database.txt
+
+# IDE files
+.idea/
+*.iml
+.settings/
+# .vscode/ - Commented out so team can share VS Code configuration
+.DS_Store
+.vscode/

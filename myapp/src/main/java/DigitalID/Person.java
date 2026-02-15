@@ -123,7 +123,12 @@ public class Person {
         return sb.toString();
     }
 
-    // Convert database entry to Person Object
+    /**
+     * Convert database entry to Person Object
+     * @param line
+     * @param delimiter char to regex matchduring string deserialisation
+     * @return Person from file line in Object representation
+     */
     public static Person fromFileLine(String line, String delimiter) {
         if (line == null || line.trim().isEmpty()) { return null; }
         String[] parts = line.split("\\" + delimiter);
@@ -144,6 +149,10 @@ public class Person {
     }
     
     // Methods
+    /**
+     * Helper method for addPerson condition aggregation
+     * @return true if (checkNameFormat, checkAddressFormat, & checkBirthdayFormat) == true
+     */
     public boolean meetsAddPersonRequirements(){
         if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
             return true;
@@ -151,6 +160,11 @@ public class Person {
         return false;
     }
 
+    /**
+     * Method to add person to TXT file ifcheckNameFormat, checkAddressFormat, 
+     * & checkBirthdayFormat requirements are met
+     * @return true if Person object is successfully added to TXT file
+     */
     public boolean addPerson(){
         // Instruction: If the Person's information meets the above conditions
             // (and any other conditions you want to consider) 
@@ -172,7 +186,10 @@ public class Person {
         // Otherwise, do not insert into the TXT file and return false.
         else { return false;}
     }
-
+    /**
+     * 
+     * @return true if person.updatePersonalDetails() succeed and TXT file is updated
+     */
     public boolean updatePersonalDetails(){
         if (meetsAddPersonRequirements()) { // All conditions from addPerson are checked here.
             try {
@@ -207,6 +224,12 @@ public class Person {
         return false;
     }
 
+    /**
+     * Method to add demerit point deduction to person mapping
+     * @param offenseDate date of offense in DD-MM-YYYY format
+     * @param points points correlated to associated offense
+     * @return 'Success' on success, 'Failed' on failure
+     */
     public String addDemeritPoints(String offenseDate, int points){
         // Condition 1: Offense date format must be DD-MM-YYYY.
         if (!checkOffenseDateFormat(offenseDate)) {

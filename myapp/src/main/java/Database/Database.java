@@ -16,7 +16,11 @@ public class Database {
     public static final String DB_FILE = "database.txt";
     public static final String DELIMITER = "|";
     
-    // Add Person Object to the Database
+    /**
+     * Add Person Object to the Database
+     * @param person object to be added to TXT file
+     * @throws IOException
+     */
     public static void createPerson(Person person) throws IOException {
         ensureDatabaseExists(); // Create DB if necessary
 
@@ -33,7 +37,11 @@ public class Database {
 
     }
     
-    // Update existing Person within DB
+    /**
+     * Update existing Person within TXT file
+     * @param updatedPerson person object to be updated
+     * @throws IOException 
+     */
     public static void updatePerson(Person updatedPerson) throws IOException {
         File file = new File(DB_FILE);
         if (!file.exists()) {
@@ -64,7 +72,12 @@ public class Database {
         writeAllLines(allLines);
     }
 
-    // Search for person within DB by _personID
+    /**
+     * Search for person within TXT file by _internalID
+     * @param internalID internally facing UUID
+     * @return person object if found, null if not
+     * @throws IOException
+     */
     public static Person findPersonByInternalID(String internalID) throws IOException {
         File file = new File(DB_FILE);
         if (!file.exists()) {
@@ -83,7 +96,11 @@ public class Database {
         return null;
     }
 
-    // Helper function to write all lines back into DB
+    /**
+     * Helper function to write ALL lines back into TXT file
+     * @param lines
+     * @throws IOException
+     */
     private static void writeAllLines(List<String> lines) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DB_FILE))) {
             for (String line : lines) {
@@ -93,7 +110,10 @@ public class Database {
         }
     }
     
-    // Helper function to check if DB exists
+    /**
+     * Helper function to check if TXT file `../database.txt` exists
+     * @throws IOException
+     */
     private static void ensureDatabaseExists() throws IOException {
         File file = new File(DB_FILE);
         if (!file.exists()) {

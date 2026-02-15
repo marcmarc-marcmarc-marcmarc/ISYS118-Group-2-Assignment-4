@@ -65,7 +65,10 @@ public class Person {
     
     // Private Methods
     
-    // Convert the _demeritPoints Mapping into a string
+    /**
+     * Convert the _demeritPoints Mapping into a string
+     * @return _demeritPoints as date:points in formatted string 
+     * */
     private String serialiseDemeritPoints() {
         if (_demeritPoints == null || _demeritPoints.isEmpty()) {
             return "";
@@ -78,7 +81,12 @@ public class Person {
         return sb.substring(0, sb.length() - 1); // Remove the last comma..
     }
 
-    // Map the concatenated string of date:int into HashMap<Date, Integer>
+    // 
+    /**
+     * Map the concatenated string of date:int into HashMap<Date, Integer>
+     * @param data, _demeritPoints as date:points in string format
+     * @return Mapping of _demeritPoints as HashMap<Date, Integer> 
+     * */
     private static HashMap<Date, Integer> deserialiseDemeritPoints(String data) {
         HashMap<Date, Integer> map = new HashMap<>();
         if (data == null || data.trim().isEmpty()) {
@@ -97,7 +105,11 @@ public class Person {
         return map;
     }
 
-    // Convert Person object to file line for database entry
+    /**
+    * Convert Person object to file line for database entry
+    * @param delimiter, char to delimit fields during string serialisation
+    * @return Person fields in single string format delimited by `delimiter`
+    */
     public String toFileLine(String delimiter) {
         StringBuilder sb = new StringBuilder();
         sb.append(_internalID).append(delimiter);

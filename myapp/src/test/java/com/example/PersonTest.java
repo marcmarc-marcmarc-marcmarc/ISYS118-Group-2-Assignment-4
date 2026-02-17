@@ -2,7 +2,8 @@ package com.example;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -175,5 +176,153 @@ public class PersonTest {
         person.setPersonID(personID);
         person.addPerson(); 
         assertTrue(person.getPersonID() == personID, "personID with both last characters uppercase should pass");
+    }
+
+    // -------------------------------------------------------------------------
+    // updatePersonalDetails() - updatePersonalDetails Validation Tests
+    // Condition 1: If a person is under 18, their address cannot be changed. (a, b, c)
+    // Condition 2: If a person's birthday is going to be changed, then no other field
+    //              (i.e, person's ID, firstName, lastName, address) can be changed. (d, e, f)
+    // Condition 3: If the first character/digit of a person's ID is an even number,
+    //              then their ID cannot be changed. (g, h, i)
+    // -------------------------------------------------------------------------
+
+    /**
+     * a - Update address when person is under 18 (Fail)
+     * A person under 18 (Age = 16) should not be allowed to change their address.
+     */
+    @Test
+    @DisplayName("test Update Address When Person Is Under 18")
+    public void testUpdateAddressPersonUnder18() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        String pastDate = LocalDate.now().minusYears(16).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 16 Y.O in dd-MM-yyyy format
+        person.setBirthdate(pastDate); 
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertFalse(result, "Updating address for a person under 18 should fail");
+    }
+
+    /**
+     * b - Update address when person is 18 (Pass)
+     * A person who is 18 should be allowed to change their address.
+     */
+    @Test
+    @DisplayName("test Update Address When Person Is 18")
+    public void testUpdateAddressPersonIs18() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        String pastDate = LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 18 Y.O in dd-MM-yyyy format
+        person.setBirthdate(pastDate); 
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertTrue(result, "Updating address for a person who is exactly 18 should pass");
+    }
+
+    /**
+     * c - Update address when person's age is null (Fail)
+     * If age has not been set, address cannot be changed.
+     */
+    @Test
+    @DisplayName("test Update Address When Person Age Is Null")
+    public void testUpdateAddressPersonAgeIsNull() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor."); 
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertFalse(result, "Updating address when age is null should fail");
+    }
+
+    /**
+     * d - Update birthdate and update first name (Fail)
+     * If birthdate is being changed, no other fields can change simultaneously.
+     */
+    @Test
+    @DisplayName("test Update Birthdate And First Name Together")
+    public void testUpdateBirthdateAndFirstName() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
+        person.setBirthdate(pastDate); 
+        person.setPersonID("12!@qwerTY");
+        boolean result = person.updatePersonalDetails();
+        assertFalse(result, "Updating birthdate alongside firstName should fail");
+    }
+
+    /**
+     * e - Update birthdate and all other fields (Fail)
+     * Changing birthdate while also changing other fields (personID, firstName, lastName, address) not permitted
+     */
+    @Test
+    @DisplayName("test Update Birthdate And All Other Fields")
+    public void testUpdateBirthdateAndAllOtherFields() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
+        person.setBirthdate(pastDate); 
+        person.setPersonID("12!@qwerTY");
+        person.setFirstName("NewFirstName");
+        person.setLastName("NewLastName");
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertFalse(result, "Updating birthdate alongside all other fields should fail");
+    }
+
+    /**
+     * f - Update all fields except birthdate (Pass)
+     * Changing personID, firstName, lastName, and address without touching
+     * birthdate should be permitted (assuming other conditions are met).
+     */
+    @Test
+    @DisplayName("test Update All Fields Except Birthdate")
+    public void testUpdateAllFieldsExceptBirthdate() {
+        person.setPersonID("12!@qwerTY");
+        person.setFirstName("NewFirstName");
+        person.setLastName("NewLastName");
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertTrue(result, "Updating all fields except birthdate should pass");
+    }
+
+    /**
+     * g - Update personID when first character of personID is an even-numbered digit (Fail)
+     * If the first digit of the current personID is even, the ID cannot be changed.
+     */
+    @Test
+    @DisplayName("test Update PersonID When First Char Is Even Digit")
+    public void testUpdatePersonIDFirstCharEvenDigit() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        person.setPersonID("23!@qwerTY");
+        person.setFirstName("NewFirstName");
+        person.setLastName("NewLastName");
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        boolean result = person.updatePersonalDetails();
+        assertTrue(result, "Updating fields & setting PersonID.char(0) to even numbered int should pass");
+        person.setPersonID("42!@qwerTY");
+        result = person.updatePersonalDetails();
+        assertFalse(result, "Updating personID when first digit is even should fail");
+    }
+
+    /**
+     * h - Update personID when first character of personID is null (Pass)
+     * If the personID has not been set, the ID can be changed freely.
+     */
+    @Test
+    @DisplayName("test Update PersonID When First Char Is Null")
+    public void testUpdatePersonIDFirstCharIsNull() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        person.setPersonID("12!@qwerTY");
+        boolean result = person.updatePersonalDetails();
+        assertTrue(result, "Updating personID when existing personID is null should pass");
+    }
+
+    /**
+     * i - Update personID when first character of personID is an odd-numbered digit (Pass)
+     * If the first digit of the current personID is odd, the ID can be changed.
+     */
+    @Test
+    @DisplayName("test Update PersonID When First Char Is Odd Digit")
+    public void testUpdatePersonIDFirstCharOddDigit() {
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+        person.setPersonID("12!@qwerTY");
+        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
+        person.setBirthdate(pastDate); 
+        boolean result = person.updatePersonalDetails();
+        assertTrue(result, "Updating personID when first digit is odd should pass");
     }
 }

@@ -166,24 +166,28 @@ public class Person {
      * @return true if Person object is successfully added to TXT file
      */
     public boolean addPerson(){
-        // Instruction: If the Person's information meets the above conditions
-            // (and any other conditions you want to consider) 
+        // add to file if the Person's information meets the required conditions
+        // and the personID does not already exist
 
+        // if all three helper methods return true, then the addPerson() conditions
+        // have all been met, and the function adds the person and return true.
         if (checkNameFormat() && checkAddressFormat() && checkBirthdayFormat()){
             // update text file.
             try {
+                // ensure person does not already exist in file
                 if (Database.findPersonByInternalID(this._internalID) == null){
-                     // the information should be inserted into a TXT file,
+                    // create and add person to TXT file,
                     Database.createPerson(this);
                     
                 }
             } catch (Exception e) {
+                // if can't add person to file, fucntion returns false
                 return false;
             }
             // and the addPerson function should return true.
             return true;
         }
-        // Otherwise, do not insert into the TXT file and return false.
+        // if conditions not met, do not insert into the TXT file and return false.
         else { return false;}
     }
     /**
@@ -313,21 +317,22 @@ public class Person {
 
         // the first two characters should be numbers between 2 and 9,
         if (!Character.isDigit(this._personID.charAt(0)) ||
-            this._personID.charAt(0) == '0' || this._personID.charAt(0) == '1'){
+            this._personID.charAt(0) == 0 || this._personID.charAt(0) == 1){
             correctFormat = false;
         }
         if (!Character.isDigit(this._personID.charAt(1)) ||
-            this._personID.charAt(1) == '0' || this._personID.charAt(1) == '1'){
+            this._personID.charAt(1) == 0 || this._personID.charAt(1) == 1){
             correctFormat = false;
         }
         // there should be at least two special characters between characters 3 and 8,
-            // inclusive of 3 and 8?
+        // rerquirements vague, chosent to be inclusive of chars 3 and 8.
         for (int i = 2; i < this._personID.length(); i++){
             if (!Character.isLetterOrDigit(this._personID.charAt(i))){
                 specialCounter += 1;
             }
         }
         if (specialCounter < 2){
+            // less than 2 characters so name format is false
             correctFormat = false;
         }
         // and the last two characters should be upper case letters (A - Z).
@@ -343,46 +348,56 @@ public class Person {
         // Condition 2: The address of the Person should follow the format:
         // StreetNumber|Street|City|State|Country
 
-        // The State should be only Victoria.
+        
         // Example: 32|Highland Street|Melbourne|Victoria|Australia
-        Boolean correctFormat = true;
+        boolean correctFormat = true;
         int pipeCounter = 0;
         String address = this._address;
         
+        // ensure correct amount of |, break early if incorrect
         for (int i = 0; i < address.length(); i++){
             if (address.charAt(i) == '|'){
                 pipeCounter += 1;
             }
         }
         if (pipeCounter != 4) { return false; }
-
-        String details [] = address.split("\\|");
-        
-        if (details.length != 5){
-            correctFormat = false;
-        }
-        if (!details[3].equalsIgnoreCase("Victoria")){
-            correctFormat = false;
-        }
-        try {
-            Integer.parseInt(details[0]);
-        } catch (Exception e){
-            correctFormat = false;
+          
+        String[] details = address.split("\\|");    
+      
+        if (correctFormat){
+            // confirm that all fields have content, i.e. no || together
+            if (details.length != 5){
+                correctFormat = false;
+            }
+            // The State should be only Victoria.
+            // case sensitive format checking for Victoria
+            if (!details[3].equals("Victoria")){
+                correctFormat = false;
+            }
+            // check that address number is an integer, catch if not.
+            try {
+                Integer.parseInt(details[0]);
+            } catch (Exception e){
+                correctFormat = false;
+            }
         }
 
         return correctFormat;
-
     }
 
     private boolean checkBirthdayFormat(){
         // Condition 3: The birth date format should be: DD-MM-YYYY.
 
         Boolean correctFormat = true;
+        
+        // set date pattern to DD-MM-YYYY
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy"); 
         try {
+            // check date matches pattern, additionally checks date is a viable date
             LocalDate.parse(getBirthdate(), formatter);
         }
         catch (Exception e){
+            // date has failed, method must return false.
             correctFormat = false;
         }
         return correctFormat;

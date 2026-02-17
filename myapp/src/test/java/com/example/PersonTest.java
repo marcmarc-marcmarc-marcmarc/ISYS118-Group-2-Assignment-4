@@ -247,7 +247,7 @@ public class PersonTest {
 
     /**
      * e - Update birthdate and all other fields (Fail)
-     * Changing birthdate while also changing other fields (personID, firstName, lastName, address) not permitted
+     * Changing birthdate while also changing other fields (personID, firstName, lastName, address) not permitted.
      */
     @Test
     @DisplayName("test Update Birthdate And All Other Fields")

@@ -90,7 +90,7 @@ public class PersonTest {
     @Test
     @DisplayName("test Person ID Only One First Char Digit")
     public void testPersonIDOnlyOneFirstCharDigit() {
-        String personID = "51@#abcZAB";
+        String personID = "5A@#abcZAB";
         person.setPersonID(personID);
         person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson();

@@ -52,7 +52,9 @@ public class PersonTest {
     @DisplayName("test Person ID Length Too Short")
     public void testPersonIDLengthTooShort() {
         String personID = "23@#abcAB"; 
-        assertFalse(person.getPersonID() == personID, "personID shorter than 10 characters should fail");
+        person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        assertFalse(person.checkNameFormat(), "personID shorter than 10 characters should fail");
     }
 
     /**
@@ -62,8 +64,10 @@ public class PersonTest {
     @Test
     @DisplayName("test Person ID Length Exactly Ten")
     public void testPersonIDLengthExactlyTen() {
-        String personID = "56@#abcZAB"; 
-        assertTrue(person.getPersonID() == personID, "personID of exactly 10 characters should pass");
+        String personID = "564#**cZAB"; 
+        person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        assertTrue(person.checkNameFormat(), "personID of exactly 10 characters should pass");
     }
 
     /**
@@ -75,8 +79,9 @@ public class PersonTest {
     public void testPersonIDFirstTwoCharsNotDigits() {
         String personID = "AB@#abcZAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertFalse(person.getPersonID() == personID, "personID with non-digit first two characters should fail");
+        assertFalse(person.checkNameFormat(), "personID with non-digit first two characters should fail");
     }
 
     /**
@@ -87,8 +92,9 @@ public class PersonTest {
     public void testPersonIDOnlyOneFirstCharDigit() {
         String personID = "51@#abcZAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson();
-        assertFalse(person.getPersonID() == personID, "personID with only one valid leading digit should fail");
+        assertFalse(person.checkNameFormat(), "personID with only one valid leading digit should fail");
     }
 
     /**
@@ -100,8 +106,9 @@ public class PersonTest {
     public void testPersonIDBothFirstCharsValidDigits() {
         String personID = "37@#abcZAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertTrue(person.getPersonID() == personID, "personID with both first chars as digits 2-9 should pass");
+        assertTrue(person.checkNameFormat(), "personID with both first chars as digits 2-9 should pass");
     }
 
     /**
@@ -113,8 +120,9 @@ public class PersonTest {
     public void testPersonIDTooFewSpecialChars() {
         String personID = "56@abcdeAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertFalse(person.getPersonID() == personID, "personID with fewer than two special chars in positions 3-8 should fail");
+        assertFalse(person.checkNameFormat(), "personID with fewer than two special chars in positions 3-8 should fail");
     }
 
     /**
@@ -125,8 +133,9 @@ public class PersonTest {
     public void testPersonIDExactlyTwoSpecialChars() {
         String personID = "56@#abcdAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertTrue(person.getPersonID() == personID, "personID with exactly two special chars in positions 3-8 should pass");
+        assertTrue(person.checkNameFormat(), "personID with exactly two special chars in positions 3-8 should pass");
     }
 
     /**
@@ -137,8 +146,9 @@ public class PersonTest {
     public void testPersonIDMoreThanTwoSpecialChars() {
         String personID = "56@#!acdAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertTrue(person.getPersonID() == personID, "personID with more than two special chars in positions 3-8 should pass");
+        assertTrue(person.checkNameFormat(), "personID with more than two special chars in positions 3-8 should pass");
     }
 
     /**
@@ -149,8 +159,9 @@ public class PersonTest {
     public void testPersonIDLastTwoCharsNotUppercase() {
         String personID = "56@#abcdab";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertFalse(person.getPersonID() == personID, "personID with no uppercase last two characters should fail");
+        assertFalse(person.checkNameFormat(), "personID with no uppercase last two characters should fail");
     }
 
     /**
@@ -161,8 +172,9 @@ public class PersonTest {
     public void testPersonIDOnlyOneLastCharUppercase() {
         String personID = "56@#abcdAb";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertFalse(person.getPersonID() == personID, "personID with only one uppercase last character should fail");
+        assertFalse(person.checkNameFormat(), "personID with only one uppercase last character should fail");
     }
 
     /**
@@ -174,8 +186,9 @@ public class PersonTest {
     public void testPersonIDBothLastCharsUppercase() {
         String personID = "56@#abcdAB";
         person.setPersonID(personID);
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         person.addPerson(); 
-        assertTrue(person.getPersonID() == personID, "personID with both last characters uppercase should pass");
+        assertTrue(person.checkNameFormat(), "personID with both last characters uppercase should pass");
     }
 
     // -------------------------------------------------------------------------
@@ -241,6 +254,7 @@ public class PersonTest {
         String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
         person.setBirthdate(pastDate); 
         person.setPersonID("12!@qwerTY");
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
         assertFalse(result, "Updating birthdate alongside firstName should fail");
     }
@@ -307,6 +321,7 @@ public class PersonTest {
     public void testUpdatePersonIDFirstCharIsNull() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
         person.setPersonID("12!@qwerTY");
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
         assertTrue(result, "Updating personID when existing personID is null should pass");
     }
@@ -322,6 +337,7 @@ public class PersonTest {
         person.setPersonID("12!@qwerTY");
         String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
         person.setBirthdate(pastDate); 
+        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
         assertTrue(result, "Updating personID when first digit is odd should pass");
     }

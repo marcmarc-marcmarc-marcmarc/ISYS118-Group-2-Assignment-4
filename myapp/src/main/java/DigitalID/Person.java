@@ -308,10 +308,13 @@ public class Person {
 
 
 
-    private boolean checkNameFormat(){
+    public boolean checkNameFormat(){
         Boolean correctFormat = true;
         int specialCounter = 0;
-    
+        
+        // handle null error on string id
+        if (this._personID ==  null) { return false;}
+
         // Condition 1: PersonID should be exactly 10 characters long;
         if (this._personID.length() != 10) { return false; }
 
@@ -336,15 +339,17 @@ public class Person {
             correctFormat = false;
         }
         // and the last two characters should be upper case letters (A - Z).
-        if (!Character.isUpperCase(this._personID.charAt(8)) ||
-            !Character.isUpperCase(this._personID.charAt(9))){
+        if (Character.isLowerCase(this._personID.charAt(8)) ||
+            !Character.isLetter(this._personID.charAt(8))   ||
+            Character.isLowerCase(this._personID.charAt(9)) ||
+            !Character.isLetter(this._personID.charAt(9))){
             correctFormat = false;
         }
 
         return correctFormat;
     }
 
-    private boolean checkAddressFormat(){
+    public boolean checkAddressFormat(){
         // Condition 2: The address of the Person should follow the format:
         // StreetNumber|Street|City|State|Country
 
@@ -385,7 +390,7 @@ public class Person {
         return correctFormat;
     }
 
-    private boolean checkBirthdayFormat(){
+    public boolean checkBirthdayFormat(){
         // Condition 3: The birth date format should be: DD-MM-YYYY.
 
         Boolean correctFormat = true;

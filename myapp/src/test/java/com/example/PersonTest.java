@@ -210,7 +210,7 @@ public class PersonTest {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
 
         // Arrange - Create person under 18 years old
-        String pastDate = LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 18 Y.O in dd-MM-yyyy format
+        String pastDate = LocalDate.now().minusYears(17).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 18 Y.O in dd-MM-yyyy format
         Person person = new Person("56s_d%&fAW", "Robert", "Johnson", 
                                    "32|Highland Street|Melbourne|Victoria|Australia", 
                                    pastDate); // under 18 years old

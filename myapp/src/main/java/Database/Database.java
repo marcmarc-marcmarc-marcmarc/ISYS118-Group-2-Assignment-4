@@ -14,7 +14,7 @@ import DigitalID.Person;
 public class Database {
     // Static Variables
     public static final String DB_FILE = "database.txt";
-    public static final String DELIMITER = "|";
+    public static final String DELIMITER = "^";
     
     /**
      * Add Person Object to the Database

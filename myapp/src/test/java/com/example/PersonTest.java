@@ -375,24 +375,26 @@ public class PersonTest {
     /** 
      *This test has a logic error as we cannot add a Person with null personID to the database. The test will fail 
      * - Tommy s4018825
+     * 
+     * This is not possible as the addPerson will return false if there is a null, so it can't be in the DB
     */
-    @Test
-    @DisplayName("test Update PersonID When First Char Is Null")
-    public void testUpdatePersonIDFirstCharIsNull() {
-        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+    // @Test
+    // @DisplayName("test Update PersonID When First Char Is Null")
+    // public void testUpdatePersonIDFirstCharIsNull() {
+    //     assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
 
-        // Arrange - Create person
-        Person person = new Person(null, "Steve", "Zuckerberg", 
-                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1986");
-        person.addPerson();
+    //     // Arrange - Create person
+    //     Person person = new Person(null, "Steve", "Zuckerberg", 
+    //                                "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1986");
+    //     person.addPerson();
 
-        // Act - Update personID
-        person.setPersonID("67s_d%&fAR");
-        boolean result = person.updatePersonalDetails();
+    //     // Act - Update personID
+    //     person.setPersonID("67s_d%&fAR");
+    //     boolean result = person.updatePersonalDetails();
 
-        // Assert
-        assertTrue(result, "Updating personID for a person who does not currently have an ID should pass");
-    }
+    //     // Assert
+    //     assertTrue(result, "Updating personID for a person who does not currently have an ID should pass");
+    // }
 
 
     /**

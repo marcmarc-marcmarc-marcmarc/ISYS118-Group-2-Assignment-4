@@ -208,11 +208,20 @@ public class PersonTest {
     @DisplayName("test Update Address When Person Is Under 18")
     public void testUpdateAddressPersonUnder18() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        String pastDate = LocalDate.now().minusYears(16).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 16 Y.O in dd-MM-yyyy format
-        person.setBirthdate(pastDate); 
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person under 18 years old
+        String pastDate = LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 18 Y.O in dd-MM-yyyy format
+        Person person = new Person("56s_d%&fAW", "Robert", "Johnson", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", 
+                                   pastDate); // under 18 years old
+        person.addPerson();
+
+        // Act - Update address
+        person.setAddress("33|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
-        assertFalse(result, "Updating address for a person under 18 should fail");
+
+        // Assert
+        assertFalse(result, "Updating address for a person who is under 18 should fail");
     }
 
     /**
@@ -223,12 +232,22 @@ public class PersonTest {
     @DisplayName("test Update Address When Person Is 18")
     public void testUpdateAddressPersonIs18() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+
+        // Arrange - Create person exactly 18 years old
         String pastDate = LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 18 Y.O in dd-MM-yyyy format
-        person.setBirthdate(pastDate); 
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        Person person = new Person("56s_d%&fAD", "Robert", "Johnson", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", 
+                                   pastDate); // 18 years old
+        person.addPerson();
+
+        // Act - Update address
+        person.setAddress("33|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
+
+        // Assert
         assertTrue(result, "Updating address for a person who is exactly 18 should pass");
     }
+
 
     /**
      * c - Update address when person's age is null (Fail)
@@ -237,10 +256,19 @@ public class PersonTest {
     @Test
     @DisplayName("test Update Address When Person Age Is Null")
     public void testUpdateAddressPersonAgeIsNull() {
-        assertEquals(null, person.getPersonID(), "personID should be null from default constructor."); 
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+
+        // Arrange - Create person with null age
+        Person person = new Person("56s_d%&fAR", "Robert", "Johnson", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", null); // 18 years old
+        person.addPerson();
+
+        // Act - Update address
+        person.setAddress("33|Highland Street|Melbourne|Victoria|Australia");
         boolean result = person.updatePersonalDetails();
-        assertFalse(result, "Updating address when age is null should fail");
+
+        // Assert
+        assertFalse(result, "Updating address for a person whose age is null should fail");
     }
 
     /**
@@ -251,12 +279,19 @@ public class PersonTest {
     @DisplayName("test Update Birthdate And First Name Together")
     public void testUpdateBirthdateAndFirstName() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
-        person.setBirthdate(pastDate); 
-        person.setPersonID("12!@qwerTY");
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person 
+        Person person = new Person("56s_d%&fAB", "Robert", "Johnson", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1990"); // Age ~35
+        person.addPerson();
+
+        // Act - Update birthdate and first name together
+        person.setBirthdate("13-11-1990");
+        person.setFirstName("Steven");
         boolean result = person.updatePersonalDetails();
-        assertFalse(result, "Updating birthdate alongside firstName should fail");
+
+        // Assert
+        assertFalse(result, "Updating birthdate with other fields should fail");
     }
 
     /**
@@ -267,14 +302,22 @@ public class PersonTest {
     @DisplayName("test Update Birthdate And All Other Fields")
     public void testUpdateBirthdateAndAllOtherFields() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
-        person.setBirthdate(pastDate); 
-        person.setPersonID("12!@qwerTY");
-        person.setFirstName("NewFirstName");
-        person.setLastName("NewLastName");
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person 
+        Person person = new Person("56s_d%&fAZ", "John", "Doe", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1988"); // Age ~35
+        person.addPerson();
+
+        // Act - Update birthdate and all other fields
+        person.setBirthdate("13-11-1990");
+        person.setAddress("33|Highland Street|Melbourne|Victoria|Australia");
+        person.setFirstName("Craig");
+        person.setLastName("Cricket");
+        person.setPersonID("79s_a%&fAQ");
         boolean result = person.updatePersonalDetails();
-        assertFalse(result, "Updating birthdate alongside all other fields should fail");
+
+        // Assert
+        assertFalse(result, "Updating birthdate with other fields should fail");
     }
 
     /**
@@ -285,11 +328,21 @@ public class PersonTest {
     @Test
     @DisplayName("test Update All Fields Except Birthdate")
     public void testUpdateAllFieldsExceptBirthdate() {
-        person.setPersonID("12!@qwerTY");
-        person.setFirstName("NewFirstName");
-        person.setLastName("NewLastName");
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+        assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
+
+        // Arrange - Create person 
+        Person person = new Person("56s_d%&fAZ", "Mary", "Sue", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1993"); // Age ~35
+        person.addPerson();
+
+        // Act - Update all fields except birthdate
+        person.setAddress("33|Highland Street|Melbourne|Victoria|Australia");
+        person.setFirstName("Mary");
+        person.setLastName("Jane");
+        person.setPersonID("73s_a%&fAB");
         boolean result = person.updatePersonalDetails();
+
+        // Assert
         assertTrue(result, "Updating all fields except birthdate should pass");
     }
 
@@ -301,30 +354,46 @@ public class PersonTest {
     @DisplayName("test Update PersonID When First Char Is Even Digit")
     public void testUpdatePersonIDFirstCharEvenDigit() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        person.setPersonID("23!@qwerTY");
-        person.setFirstName("NewFirstName");
-        person.setLastName("NewLastName");
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person
+        Person person = new Person("26s_d%&fAR", "Robert", "Johnson", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1993");
+        person.addPerson();
+
+        // Act - Update personID
+        person.setPersonID("67s_d%&fAR");
         boolean result = person.updatePersonalDetails();
-        assertTrue(result, "Updating fields & setting PersonID.char(0) to even numbered int should pass");
-        person.setPersonID("42!@qwerTY");
-        result = person.updatePersonalDetails();
-        assertFalse(result, "Updating personID when first digit is even should fail");
+
+        // Assert
+        assertFalse(result, "Updating personID for a person whose current ID begins with an event digit should fail");
     }
 
     /**
      * h - Update personID when first character of personID is null (Pass)
      * If the personID has not been set, the ID can be changed freely.
      */
+    /** 
+     *This test has a logic error as we cannot add a Person with null personID to the database. The test will fail 
+     * - Tommy s4018825
+    */
     @Test
     @DisplayName("test Update PersonID When First Char Is Null")
     public void testUpdatePersonIDFirstCharIsNull() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        person.setPersonID("12!@qwerTY");
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person
+        Person person = new Person(null, "Steve", "Zuckerberg", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1986");
+        person.addPerson();
+
+        // Act - Update personID
+        person.setPersonID("67s_d%&fAR");
         boolean result = person.updatePersonalDetails();
-        assertTrue(result, "Updating personID when existing personID is null should pass");
+
+        // Assert
+        assertTrue(result, "Updating personID for a person who does not currently have an ID should pass");
     }
+
 
     /**
      * i - Update personID when first character of personID is an odd-numbered digit (Pass)
@@ -334,11 +403,28 @@ public class PersonTest {
     @DisplayName("test Update PersonID When First Char Is Odd Digit")
     public void testUpdatePersonIDFirstCharOddDigit() {
         assertEquals(null, person.getPersonID(), "personID should be null from default constructor.");
-        person.setPersonID("12!@qwerTY");
-        String pastDate = LocalDate.now().minusYears(25).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")); // 25 Y.O in dd-MM-yyyy format
-        person.setBirthdate(pastDate); 
-        person.setAddress("32|Highland Street|Melbourne|Victoria|Australia");
+
+        // Arrange - Create person
+        Person person = new Person("67s_d%&fAR", "Steve", "Silverspoon", 
+                                   "32|Highland Street|Melbourne|Victoria|Australia", "15-11-1984");
+        person.addPerson();
+
+        // Act - Update personID
+        person.setPersonID("37s_d%&fAR");
         boolean result = person.updatePersonalDetails();
-        assertTrue(result, "Updating personID when first digit is odd should pass");
+
+        // Assert
+        assertTrue(result, "Updating personID for a person whose current personID begins with an odd-numbered digit should pass");
     }
 }
+
+    /**
+     * I've found every test that asserts True fails. I think it has something to 
+     * do with:
+     * if (!canUpdateFields(isUpdatingBirthdate, isUpdatingPersonID,
+     *                                 isUpdatingFirstName, isUpdatingLastName, isUpdatingAddress)) {
+     *                   return false;
+     *               }
+     * inside updatePersonalDetails() but I am not sure why.
+     * - Tommy s4018825
+    **/
